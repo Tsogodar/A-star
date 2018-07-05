@@ -33,19 +33,53 @@ const visit = (parent, map) => {
     return canVisit;
 };
 
-//główny program wykonywalny
-const main = (start, end) => {
-    const map = loadArrayFromFile('pdf.txt');
-    let closeList = [start];
-    let openList = [];
+const findPath=(openList,closeList,start,end,map,euclidesValues)=> {
+    let openListLength=openList.length
     openList.push(visit(start, map));
-    openList.forEach(item => {
-        item.forEach(position => {
+        openList[openListLength].forEach(position => {
             if (Object.keys(position)[0] !== 'parent') {
-                    console.log(euclidHeuristic(position, end))
+                euclidesValues.push([position, euclidHeuristic(position, end)]);
             }
         })
+// console.log(euclidesValues);
+    minimalCost = euclidesValues[0][1];
+    euclidesValues.forEach(value => {
+        if (value[1] > minimalCost) {
+            minimalCost = value;
+            closeList.push(value[0])
+        }
     })
+    console.log(closeList)
+    console.log(openList)
+    return findPath(openList,closeList,start,end,map,euclidesValues)
+}
+
+//główny program wykonywalny
+const main = (start, end) => {
+    let minimalCost = 0;
+    let euclidesValues = [];
+    const map = loadArrayFromFile('pdf.txt');
+    let closeList = [];
+    let openList = [];
+    closeList.push(start)
+    findPath(openList,closeList,start,end,map,euclidesValues)
+    // openList.push(visit(start, map));
+    // openList.forEach(item => {
+    //     item.forEach(position => {
+    //         if (Object.keys(position)[0] !== 'parent') {
+    //             euclidesValues.push([position, euclidHeuristic(position, end)]);
+    //         }
+    //     })
+    // });
+    // // console.log(euclidesValues);
+    // minimalCost =euclidesValues[0][1];
+    //     euclidesValues.forEach(value => {
+    //         if(value[1]>minimalCost){
+    //             minimalCost=value;
+    //             closeList.push(value[0])
+    //         }
+    //     })
+    // console.log(closeList)
 
 };
 
