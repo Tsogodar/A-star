@@ -23,35 +23,40 @@ const visit = (parent, map) => {
         {'top': [parent[0], parent[1] - 1]},
         {'right': [parent[0] + 1, parent[1]]}
     ];
+    console.log(candidate)
     candidate.forEach((direction) => {
         let cords = direction[Object.keys(direction)];
-        let value = map[cords[0]][cords[1]];
-        if (value !== 5) {
-            canVisit.push(cords)
+        if ((cords[0] >= 0 || cords[1] >= 0) && (cords[0] >= 0 && cords[1] >= 0)) {
+            let value = map[cords[0]][cords[1]];
+            console.log(value)
+            if (value !== 5) {
+                canVisit.push(cords)
+            }
         }
     });
     return canVisit;
 };
-
-const findPath=(openList,closeList,start,end,map,euclidesValues)=> {
-    let openListLength=openList.length
+//todo poprawić warunek w metodzie visit
+const findPath = (openList, closeList, start, end, map, euclidesValues) => {
+    let openListLength = openList.length
     openList.push(visit(start, map));
-        openList[openListLength].forEach(position => {
-            if (Object.keys(position)[0] !== 'parent') {
-                euclidesValues.push([position, euclidHeuristic(position, end)]);
-            }
-        })
+    openList[openListLength].forEach(position => {
+        if (Object.keys(position)[0] !== 'parent') {
+            euclidesValues.push([position, euclidHeuristic(position, end)]);
+        }
+    })
 // console.log(euclidesValues);
     minimalCost = euclidesValues[0][1];
     euclidesValues.forEach(value => {
         if (value[1] > minimalCost) {
             minimalCost = value;
             closeList.push(value[0])
+            start = value[0]
         }
     })
-    console.log(closeList)
-    console.log(openList)
-    return findPath(openList,closeList,start,end,map,euclidesValues)
+    // console.log(closeList)
+    // console.log(openList)
+    return findPath(openList, closeList, start, end, map, euclidesValues)
 }
 
 //główny program wykonywalny
@@ -62,7 +67,7 @@ const main = (start, end) => {
     let closeList = [];
     let openList = [];
     closeList.push(start)
-    findPath(openList,closeList,start,end,map,euclidesValues)
+    findPath(openList, closeList, start, end, map, euclidesValues)
     // openList.push(visit(start, map));
     // openList.forEach(item => {
     //     item.forEach(position => {
